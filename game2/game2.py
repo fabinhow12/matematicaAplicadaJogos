@@ -12,6 +12,7 @@ screen = pygame.display.set_mode((width,height))#seta tamanho da tela
 
 keys = [False,False,False,False]
 playerpos = [300,300]
+arrows=[]#Armezena os tiros
 pygame.mixer.init()
 pygame.display.set_caption("X: "+str(playerpos[0])+", "+"Y: "+str(playerpos[1]))#Seta o titulo da tela
 
@@ -19,9 +20,12 @@ pygame.display.set_caption("X: "+str(playerpos[0])+", "+"Y: "+str(playerpos[1]))
 
 player = pygame.image.load("images/dude.png")
 grass = pygame.image.load("images/grass.png")
+arrow = pygame.image.load("images/bullet.png")
 
 #Carrega o audio
+shoot = pygame.mixer.Sound("audio/shoot.wav")
 pygame.mixer.music.load("audio/moonlight.wav")
+shoot.set_volume(0.05)
 pygame.mixer.music.play(-1, 0.0)
 pygame.mixer.music.set_volume(0.25)
 
@@ -45,6 +49,19 @@ while running:
     playerpos1 = (playerpos[0]-playerrot.get_rect().width/2, playerpos[1]-playerrot.get_rect().height/2)
     screen.blit(playerrot, playerpos1)
 
+    #Desenha os tiros
+    for bullet in arrows:
+        index=0
+        velx=math.cos(bullet[0])*10
+        vely=math.sin(bullet[0])*10
+        bullet[1]+=velx
+        bullet[2]+=vely
+        if bullet[1]<-64 or bullet[1]>640 or bullet[2]<-64 or bullet[2]>480:
+            arrows.pop(index)
+        index+=1
+        for projectile in arrows:
+            arrow1 = pygame.transform.rotate(arrow, 360-projectile[0]*57.29)
+            screen.blit(arrow1, (projectile[1], projectile[2]))
 
 
     # Atualiza A Tela
@@ -75,7 +92,10 @@ while running:
                 keys[2]=False
             elif event.key==pygame.K_d:
                 keys[3]=False
-
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            shoot.play()
+            position=pygame.mouse.get_pos()
+            arrows.append([math.atan2(position[1]-(playerpos1[1]+32),position[0]-(playerpos1[0]+26)),playerpos1[0]+32,playerpos1[1]+32])
 
     #move o player
 
