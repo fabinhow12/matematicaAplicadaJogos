@@ -9,6 +9,7 @@ width, height = 800, 600
 
 screen = pygame.display.set_mode((width,height))#seta tamanho da tela
 
+clock = pygame.time.Clock()
 
 keys = [False,False,False,False]
 playerpos = [300,300]
@@ -29,6 +30,7 @@ pygame.mixer.music.set_volume(0.25)
 running = 1
 exitcode = 0
 while running:
+    clock.tick(60);
 
     #limpa a tela antes de desenhar
     screen.fill(0)
